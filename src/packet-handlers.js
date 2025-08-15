@@ -10,7 +10,9 @@ export default {
 
     if (code === 1) {
       client.appVersion -= 1;
-      console.log(`Invalid DA version, possibly too high. Trying again with ${client.appVersion}.`);
+      if (this.logDebugging) {         
+        console.log(`Invalid DA version, possibly too high. Trying again with ${client.appVersion}.`);
+      }
       client.reconnect();
       return;
     }
@@ -19,7 +21,9 @@ export default {
       packet.readByte();
       packet.readString8();  // patch url
       client.appVersion = version;
-      console.log(`Your DA version is too low. Setting DA version to ${version}.`);
+      if (this.logDebugging) {         
+        console.log(`Your DA version is too low. Setting DA version to ${version}.`);
+      }
       client.reconnect();
       return;
     }
@@ -46,12 +50,16 @@ export default {
       case 3: // Invalid name or password
       case 14: // Name does not exist
       case 15: // Incorrect password
-        console.log(`${message}.`);
+        if (this.logDebugging) {         
+          console.log(`${message}.`);
+        }
         client.disconnect();
         break;
       default:
-        console.log(message, `(code ${code})`);
-        console.log('Log in failed. Retrying...');
+        if (this.logDebugging) {         
+          console.log(message, `(code ${code})`);
+          console.log('Log in failed. Retrying...');
+        }
         setTimeout(() => client.reconnect(), 1000)
     }
   },
@@ -80,7 +88,9 @@ export default {
   },
 
   userId(packet, client) {
-    console.log(`Logged into ${client.server.name} as ${client.username}.`);
+    if (this.logDebugging) {         
+      console.log(`Logged into ${client.server.name} as ${client.username}.`);
+    }
     client.send(new Packet(0x2D));
   },
 

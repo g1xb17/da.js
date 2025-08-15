@@ -20,6 +20,7 @@ export default class {
     this.didSendVersion = false;
     this.logOutgoing = false;
     this.logIncoming = false;
+    this.logDebugging = false;
     this.incomingBuffers = [];
     this.events = new EventEmitter();
     this.events.on(0x00, packetHandlers.encryption)
@@ -43,7 +44,9 @@ export default class {
     }
 
     this.server = getServerFromAddress(address, port);
-    console.log(`Connecting to ${this.server.name}...`);
+    if (this.logDebugging) {
+      console.log(`Connecting to ${this.server.name}...`);
+    }
 
     const socket = new net.Socket();
     socket.on('data', this.receive.bind(this));
@@ -59,7 +62,7 @@ export default class {
     });
   }
 
-  disconnect(socket=this.socket) {
+  disconnect(socket = this.socket) {
     socket.destroy();
   }
 
@@ -81,8 +84,9 @@ export default class {
   }
 
   logIn() {
-    console.log(`Logging in as ${this.username}...`);
-
+    if (this.logDebugging) {
+      console.log(`Logging in as ${this.username}...`);
+    }
     const key1 = random(0xFF);
     const key2 = random(0xFF);
     let clientId = random(0xFFFFFFFF);
