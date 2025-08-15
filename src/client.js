@@ -153,7 +153,7 @@ export default class {
     let buffer = Buffer.concat(this.incomingBuffers.splice(0));
 
     while (buffer.length > 3 && buffer[0] === 0xAA) {
-      const length = buffer[1] << 8 | buffer[2] + 3;
+      const length = buffer[1] << 8 + buffer[2] + 3;
 
       if (length > buffer.length) {
         this.incomingBuffers.push(buffer);
